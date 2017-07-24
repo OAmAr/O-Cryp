@@ -23,10 +23,13 @@ void base_crypt(){
 	}
 	
 	FILE* key_f = fopen("key_file", "w+");
-	if (!fputs(key, key_f) || !fclose(key_f)){
+	int put_c   = fputs(key,key_f);
+	int close_c = fclose(key_f); 
+	if ( put_c==EOF || close_c==EOF){
+		printf("Failed writing key\n");
+		printf("put_c %c ; close_c %c\n" , put_c, close_c);
 		exit(-1);
 	}
-	printf("\n");
 	printf("Key: %s\n", key);
 
 
