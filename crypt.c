@@ -7,31 +7,57 @@
 #include <time.h>
 
 void text_crypt(char* text){
-	char orig;
+	char* c = text;
+	int s_len = 1; //start at one for room for null byte
+	do {
+		s_len++;
+		putchar(*c);
+		c++;
+	} while (*c);
+	printf("\nSize of \"%s\" is %d\n", text, s_len*4);
+	char* encrypted = malloc(sizeof(char)*s_len);
+	char* decrypted = malloc(sizeof(char)*s_len);
+	char key[64];
+	srand(time(NULL));
+	for (i=0; i < 64; i++){
+		key[i] = rand() & 1;
+	}
+	save_key(key, "text_key");
+	
+	
+	free(crypted);
+	return;
 }
+
+void save_key(char* key, filename){
+	FILE* key_f = fopen(filename, "w+");
+	int put_c   = fputs(key,key_f);
+	int close_c = fclose(key_f); 
+	
+	if ( put_c==EOF || close_c==EOF){
+		printf("Failed writing key\n");
+		printf("put_c %c ; close_c %c\n" , put_c, close_c);
+		exit(-1);
+	}
+
+	return;
+	
+}
+
 void base_crypt(){
 	char orig[9] = "eggplant";
 	char text[9];
 	char key[64];
 	char buf[64];
 	int i, j;
+
 	srand(time(NULL));
 	for (i=0; i < 64; i++){
 		key[i] = rand() & 1;
-		//printf("%d", rand());
-//		printf("%d", key[i]);
 	}
-	
-	FILE* key_f = fopen("key_file", "w+");
-	int put_c   = fputs(key,key_f);
-	int close_c = fclose(key_f); 
-	if ( put_c==EOF || close_c==EOF){
-		printf("Failed writing key\n");
-		printf("put_c %c ; close_c %c\n" , put_c, close_c);
-		exit(-1);
-	}
-	printf("Key: %s\n", key);
 
+	save_key(key, "base_key");
+	printf("Key: %s\n", key);
 
 	setkey(key); // why in the loop?
 
@@ -74,7 +100,7 @@ int main(int argc, char* argv[]){
 	}
 	char* filename = argv[1];
 	base_crypt();
-	//text_crypt(filename)
+	text_crypt(filename);
 	//file_crypt(filename);
 	return 0;
 }
